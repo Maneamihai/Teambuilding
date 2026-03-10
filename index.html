@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team Building 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #FFFBEB;
+      --primary: #ea580c;
+      --border: #e7e5e4;
+      --muted: #78716c;
+      --shadow: 0 8px 24px rgba(15,23,42,0.08);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Inter, Arial, sans-serif; background: var(--bg); color: #1c1917; min-height: 100vh; }
+    button, input { font: inherit; }
+
+    header {
+      background: rgba(255,251,235,0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+    .header-inner {
+      width: min(700px, calc(100% - 32px));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--primary);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 20px;
+    }
+    .logo-text { font-weight: 900; font-size: 17px; }
+
+    .container {
+      width: min(700px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 64px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #9a3412, #ea580c);
+      color: white;
+      border-radius: 28px;
+      padding: 36px 32px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border-radius: 999px;
+      padding: 5px 13px;
+      font-size: 13px; font-weight: 600;
+      margin-bottom: 14px;
+    }
+    .hero h1 { font-size: 38px; font-weight: 900; line-height: 1.05; margin-bottom: 10px; }
+    .hero p { color: rgba(255,255,255,0.85); font-size: 15px; line-height: 1.65; }
+
+    .step-indicator {
+      text-align: center; margin-bottom: 20px;
+      font-size: 14px; font-weight: 600; color: var(--muted);
+    }
+    .step-indicator span {
+      display: inline-block; width: 28px; height: 28px;
+      border-radius: 50%; background: var(--border);
+      line-height: 28px; font-weight: 900; font-size: 13px; margin: 0 4px;
+      transition: background .2s, color .2s;
+    }
+    .step-indicator span.active { background: var(--primary); color: white; }
+    .step-indicator span.done  { background: #16a34a; color: white; }
+
+    .card {
+      background: white; border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px;
+    }
+    .card h2 { font-size: 21px; font-weight: 900; margin-bottom: 6px; }
+    .card .sub { color: var(--muted); font-size: 14px; line-height: 1.6; margin-bottom: 22px; }
+
+    .date-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 22px; }
+    .date-card {
+      position: relative; border-radius: 18px; overflow: hidden;
+      aspect-ratio: 4/3; cursor: pointer;
+      border: 3px solid transparent; transition: border-color .2s, transform .15s;
+    }
+    .date-card:hover { transform: translateY(-2px); }
+    .date-card.selected { border-color: var(--primary); }
+    .date-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .date-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.05) 60%);
+    }
+    .date-card-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 18px; color: white; }
+    .date-card-content .desc { font-size: 12px; color: rgba(255,255,255,0.72); font-weight: 600; margin-bottom: 3px; }
+    .date-card-content .title { font-size: 28px; font-weight: 900; line-height: 1; }
+    .date-card-content .year { font-size: 14px; color: rgba(255,255,255,0.55); margin-top: 3px; }
+    .date-card-check {
+      position: absolute; top: 12px; right: 12px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .2s; color: white; font-size: 16px;
+    }
+    .date-card.selected .date-card-check { opacity: 1; }
+
+    .field { display: grid; gap: 7px; margin-bottom: 14px; }
+    .field label { font-weight: 700; font-size: 14px; }
+    .field input {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 12px;
+      padding: 12px 15px; background: #fafaf9; outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus { border-color: #f97316; box-shadow: 0 0 0 4px rgba(234,88,12,.1); }
+
+    .sel-summary {
+      background: #fff7ed; border: 1px solid #fed7aa;
+      border-radius: 12px; padding: 10px 14px;
+      font-size: 13px; color: #9a3412; font-weight: 600; margin-bottom: 18px;
+    }
+
+    .btn {
+      border: none; border-radius: 14px; padding: 14px 28px;
+      font-weight: 700; font-size: 15px; cursor: pointer;
+      transition: transform .15s, opacity .2s;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-ghost { background: #f5f5f4; color: #57534e; margin-top: 10px; }
+
+    #successView { display: none; text-align: center; padding: 60px 0; }
+    .success-icon {
+      width: 88px; height: 88px; background: #16a34a;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 22px; font-size: 40px;
+    }
+    #successView h2 { font-size: 36px; font-weight: 900; margin-bottom: 10px; }
+    #successView p { color: var(--muted); font-size: 16px; max-width: 380px; margin: 0 auto 28px; line-height: 1.6; }
+    .btn-another {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #f5f5f4; color: #57534e; border: none; border-radius: 14px;
+      padding: 13px 26px; font-weight: 700; font-size: 15px; cursor: pointer;
+    }
+    .btn-another:hover { background: #e7e5e4; }
+
+    #toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1c1917; color: white;
+      padding: 12px 22px; border-radius: 12px;
+      font-weight: 600; font-size: 14px; transition: transform .3s; z-index: 9999;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.error { background: #b91c1c; }
+
+    @media(max-width: 500px) {
+      .hero h1 { font-size: 28px; }
+      .date-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-icon">🏕</div>
+    <span class="logo-text">Team Building 2026</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-badge">🗓 Poll • On Our Own Expense</div>
+    <h1>When can you join us?</h1>
+    <p>Pick the weekend(s) that work for you — you can select one or both!</p>
+  </div>
+
+  <div id="pollView">
+    <div class="step-indicator">
+      <span id="s1" class="active">1</span> Pick dates
+      <span id="s2">2</span> Your details
+    </div>
+
+    <div id="step1">
+      <div class="card">
+        <h2>Choose your date(s)</h2>
+        <p class="sub">Tap a card to select — you can pick both if you're free either weekend.</p>
+        <div class="date-grid">
+          <div class="date-card" id="card-may-15-17" onclick="toggleDate('may-15-17')">
+            <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80" alt="May 15-17" />
+            <div class="date-card-overlay"></div>
+            <div class="date-card-content">
+              <div class="desc">Early spring getaway</div>
+              <div class="title">May 15–17</div>
+              <div class="year">2026</div>
+            </div>
+            <div class="date-card-check">✓</div>
+          </div>
+          <div class="date-card" id="card-may-22-24" onclick="toggleDate('may-22-24')">
+            <img src="https://images.unsplash.com/photo-1510312305653-8ed496efae75?w=800&q=80" alt="May 22-24" />
+            <div class="date-card-overlay"></div>
+            <div class="date-card-content">
+              <div class="desc">Late spring adventure</div>
+              <div class="title">May 22–24</div>
+              <div class="year">2026</div>
+            </div>
+            <div class="date-card-check">✓</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="continueBtn" onclick="goStep2()" disabled>Continue →</button>
+      </div>
+    </div>
+
+    <div id="step2" style="display:none;">
+      <div class="card">
+        <h2>Your details</h2>
+        <p class="sub">Just a couple of quick fields and you're done!</p>
+        <div class="sel-summary" id="selSummary"></div>
+        <div class="field"><label>First Name</label><input id="fname" placeholder="Enter your first name" /></div>
+        <div class="field"><label>Surname</label><input id="lname" placeholder="Enter your surname" /></div>
+        <div class="field"><label>Department</label><input id="dept" placeholder="e.g. Engineering, Marketing, HR" /></div>
+        <button class="btn btn-primary" id="submitBtn" onclick="submitPoll()">Submit →</button>
+        <button class="btn btn-ghost" onclick="goStep1()">← Go back</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="successView">
+    <div class="success-icon">✓</div>
+    <h2>You're all set!</h2>
+    <p id="successMsg">Thanks for your response! See you at the team building! 🎉</p>
+    <button class="btn-another" onclick="resetPoll()">Submit another response</button>
+  </div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+  var SCRIPT_URL = localStorage.getItem('tb2026_script_url') || '';
+
+  function jsonp(params) {
+    return new Promise(function(resolve, reject) {
+      if (!SCRIPT_URL) { reject(new Error('Script URL not configured')); return; }
+      var cb = 'jscb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      var url = SCRIPT_URL + '?' + new URLSearchParams(Object.assign({}, params, { callback: cb }));
+      var s = document.createElement('script');
+      var timer = setTimeout(function() { cleanup(); reject(new Error('Request timed out')); }, 15000);
+      function cleanup() { clearTimeout(timer); delete window[cb]; if (s.parentNode) s.remove(); }
+      window[cb] = function(data) { cleanup(); data && data.error ? reject(new Error(data.error)) : resolve(data); };
+      s.onerror = function() { cleanup(); reject(new Error('Network error')); };
+      s.src = url;
+      document.head.appendChild(s);
+    });
+  }
+
+  var sel = [];
+
+  function toggleDate(id) {
+    var i = sel.indexOf(id);
+    if (i >= 0) sel.splice(i, 1); else sel.push(id);
+    document.getElementById('card-' + id).classList.toggle('selected', sel.indexOf(id) >= 0);
+    document.getElementById('continueBtn').disabled = sel.length === 0;
+  }
+
+  function goStep2() {
+    if (!sel.length) return;
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
+    document.getElementById('s1').className = 'done';
+    document.getElementById('s2').className = 'active';
+    var labels = sel.map(function(d) { return d === 'may-15-17' ? 'May 15–17' : 'May 22–24'; });
+    document.getElementById('selSummary').textContent = '📅 Selected: ' + labels.join(' & ') + ' 2026';
+  }
+
+  function goStep1() {
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step1').style.display = 'block';
+    document.getElementById('s1').className = 'active';
+    document.getElementById('s2').className = '';
+  }
+
+  function submitPoll() {
+    var name    = document.getElementById('fname').value.trim();
+    var surname = document.getElementById('lname').value.trim();
+    var dept    = document.getElementById('dept').value.trim();
+    if (!name || !surname || !dept) { toast('Please fill in all fields', true); return; }
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+    jsonp({ action: 'submit', name: name, surname: surname, department: dept, dates: sel.join(',') })
+      .then(function() {
+        document.getElementById('successMsg').textContent =
+          'Thanks, ' + name + '! Your response has been recorded. See you there! 🎉';
+        document.getElementById('pollView').style.display = 'none';
+        document.getElementById('successView').style.display = 'block';
+      })
+      .catch(function(e) {
+        toast('Failed to submit: ' + e.message, true);
+        btn.disabled = false; btn.textContent = 'Submit →';
+      });
+  }
+
+  function resetPoll() {
+    sel = [];
+    ['may-15-17', 'may-22-24'].forEach(function(id) {
+      document.getElementById('card-' + id).classList.remove('selected');
+    });
+    document.getElementById('continueBtn').disabled = true;
+    ['fname', 'lname', 'dept'].forEach(function(id) { document.getElementById(id).value = ''; });
+    document.getElementById('submitBtn').disabled = false;
+    document.getElementById('submitBtn').textContent = 'Submit →';
+    goStep1();
+    document.getElementById('successView').style.display = 'none';
+    document.getElementById('pollView').style.display = 'block';
+    document.getElementById('s1').className = 'active';
+    document.getElementById('s2').className = '';
+  }
+
+  function toast(msg, isErr) {
+    var t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'show' + (isErr ? ' error' : '');
+    clearTimeout(t._t); t._t = setTimeout(function() { t.className = ''; }, 3500);
+  }
+</script>
+</body>
+</html>
